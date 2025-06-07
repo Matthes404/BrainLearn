@@ -3,6 +3,7 @@
 #include <vector>
 #include <sstream>
 #include <iomanip>
+#include <cctype>
 #include "../../position.h"
 #include "../../uci.h"
 #include "ctg.h"
@@ -476,10 +477,10 @@ void CtgBook::invert_board(CtgPositionData& positionData) const {
             if (p == ' ')
                 continue;
 
-            if (p == toupper(p))
-                p = tolower(p);
+            if (p == toupper(static_cast<unsigned char>(p)))
+                p = char(tolower(static_cast<unsigned char>(p)));
             else
-                p = toupper(p);
+                p = char(toupper(static_cast<unsigned char>(p)));
         }
     }
 }

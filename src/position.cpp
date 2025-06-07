@@ -1015,10 +1015,11 @@ Position& Position::set(const string& fenStr, bool isChess960, StateInfo* si) {
     while ((ss >> token) && !isspace(token))
     {
         Square rsq;
-        Color  c    = islower(token) ? BLACK : WHITE;
+        unsigned char uc = static_cast<unsigned char>(token);
+        Color  c    = std::islower(uc) ? BLACK : WHITE;
         Piece  rook = make_piece(c, ROOK);
 
-        token = char(toupper(token));
+        token = char(std::toupper(uc));
 
         if (token == 'K')
             for (rsq = relative_square(c, SQ_H1); piece_on(rsq) != rook; --rsq)
@@ -2004,7 +2005,10 @@ void Position::flip() {
     f += token + " ";
 
     std::transform(f.begin(), f.end(), f.begin(),
-                   [](char c) { return char(islower(c) ? toupper(c) : tolower(c)); });
+                   [](char c) {
+                       unsigned char uc = static_cast<unsigned char>(c);
+                       return char(std::islower(uc) ? std::toupper(uc) : std::tolower(uc));
+                   });
 
     ss >> token;  // En passant square
     f += (token == "-" ? token : token.replace(1, 1, token[1] == '3' ? "6" : "3"));

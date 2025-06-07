@@ -17,6 +17,7 @@
 */
 
 #include "misc.h"
+#include <cctype>
 
 #ifdef _WIN32
     #if _WIN32_WINNT < 0x0601
@@ -803,7 +804,10 @@ CommandLine::CommandLine(int _argc, char** _argv) :
 
     static std::string Empty = EMPTY;
     return std::equal(fn.begin(), fn.end(), Empty.begin(), Empty.end(),
-                      [](char a, char b) { return tolower(a) == tolower(b); });
+                      [](char a, char b) {
+                          return std::tolower(static_cast<unsigned char>(a))
+                               == std::tolower(static_cast<unsigned char>(b));
+                      });
 }
 
 /*static*/ std::string Util::fix_path(const std::string& p) {

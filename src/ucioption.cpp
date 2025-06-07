@@ -33,7 +33,10 @@ bool CaseInsensitiveLess::operator()(const std::string& s1, const std::string& s
 
     return std::lexicographical_compare(
       s1.begin(), s1.end(), s2.begin(), s2.end(),
-      [](char c1, char c2) { return std::tolower(c1) < std::tolower(c2); });
+      [](char c1, char c2) {
+          return std::tolower(static_cast<unsigned char>(c1))
+               < std::tolower(static_cast<unsigned char>(c2));
+      });
 }
 
 void OptionsMap::setoption(std::istringstream& is) {

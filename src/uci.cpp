@@ -528,7 +528,7 @@ std::string UCI::wdl(Value v, int ply) {
 
 Move UCI::to_move(const Position& pos, std::string& str) {
     if (str.length() == 5)
-        str[4] = char(tolower(str[4]));  // The promotion piece character must be lowercased
+        str[4] = char(tolower(static_cast<unsigned char>(str[4])));  // The promotion piece character must be lowercased
 
     for (const auto& m : MoveList<LEGAL>(pos))
         if (str == move(m, pos.is_chess960()))
