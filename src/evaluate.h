@@ -49,6 +49,7 @@ Value evaluate(const NNUE::Networks&          networks,
                const Position&                pos,
                Eval::NNUE::AccumulatorCaches& caches,
                int                            optimism);
+void  set_attack_bonus_strength(int bonus);
 }  // namespace Eval
 
 }  // namespace Brainlearn
