@@ -209,6 +209,10 @@ Engine::Engine(std::optional<std::string> path) :
                                      Search::set_variety(o);
                                      return std::optional<std::string>{};
                                  });  //variety
+    options["Attack Bonus"] << Option(0, 0, 100, [](const Option& o) {
+        Eval::set_attack_bonus_strength(int(o));
+        return std::nullopt;
+    });
     options["Concurrent Experience"]
       << Option(false);  //for a same experience file on a same folder
     load_networks();

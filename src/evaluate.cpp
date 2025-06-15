@@ -37,6 +37,35 @@
 
 namespace Brainlearn {
 
+namespace {
+int attackBonusStrength = 0;
+
+Value compute_attack_bonus(const Position& pos) {
+    auto bonus_for = [&](Color side) {
+        Square king = pos.square<KING>(~side);
+        Bitboard b  = pos.pieces(side, QUEEN, ROOK, BISHOP, KNIGHT);
+        int bonus    = 0;
+        while (b)
+        {
+            Square s = pop_lsb(b);
+            int d     = distance(s, king);
+            if (d <= 2)
+                bonus += 2;
+            else if (d <= 3)
+                bonus += 1;
+        }
+        return bonus;
+    };
+
+    int diff = bonus_for(pos.side_to_move()) - bonus_for(~pos.side_to_move());
+    return Value(diff * attackBonusStrength);
+}
+} // namespace
+
+void Eval::set_attack_bonus_strength(int bonus) {
+    attackBonusStrength = bonus;
+}
+
 // Returns a static, purely materialistic evaluation of the position from
 // the point of view of the given color. It can be divided by PawnValue to get
 // an approximation of the material advantage on the board in terms of pawns.
@@ -80,6 +109,8 @@ Value Eval::evaluate(const Eval::NNUE::Networks&    networks,
 
     int material = (smallNet ? 553 : 532) * pos.count<PAWN>() + pos.non_pawn_material();
     int v        = (nnue * (77777 + material) + optimism * (7777 + material)) / 77777;
+
+    v += compute_attack_bonus(pos);
 
     // Damp down the evaluation linearly when shuffling
     v -= v * pos.rule50_count() / 212;
